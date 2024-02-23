@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+			    xmlns:h="jakarta.faces.html"
+			    xmlns:f="jakarta.faces.core"
+  			    xmlns:ui="jakarta.faces.facelets"                
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/layout/template.xhtml">
+
+	<ui:define name="title">
+		Lista de Produtos
+	</ui:define>
+	
+	<ui:define name="content">		
+		<h:form>
+			<div class="table-responsive">
+				<h:dataTable class="table table-striped"
+					value="#{produtoController.produtos}" var="produto">
+				
+					<h:column>
+						<f:facet name="header">ID</f:facet>
+						#{produto.id}
+					</h:column>
+					
+					<h:column>
+						<f:facet name="header">Nome</f:facet>
+						#{produto.nome}
+					</h:column>
+					
+					<h:column>
+						<f:facet name="header">Preço</f:facet>
+						#{produto.preco}
+					</h:column>
+					
+					<h:column>
+						<f:facet name="header">Editar</f:facet>
+						<h:commandButton value="Editar" class="btn btn-success" action="#{produtoController.editar(produto)}"></h:commandButton>
+					</h:column>
+					
+					<h:column>
+						<f:facet name="header">Excluir</f:facet>
+						<h:commandButton value="Excluir" class="btn btn-danger" onclick="if (!confirm('Deseja excluir o produto #{produto.nome}?')) return false;"
+							action="#{produtoController.excluir(produto.id)}" />
+					</h:column>
+					
+				</h:dataTable>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

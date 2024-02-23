@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf17015724426460" configfile="/NxWeb/src/main/webapp/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="*" x="122" y="178" id="pf17060400188050" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf17060400188051 pf17060450123847 pf17060450123848 pf17060450123849 pf170604501238410 pf17064028936506 pf17064028936507 pf17064028936508 pf170640461032512 pf17065599412380" path="*"/>
+  <nodes xsi:type="pageflow:PFPage" name="login.xhtml" x="338" y="178" id="pf17060400188063" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf17060400188051" path="/login.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="geo/control_point.xhtml" id="pf170604501238411" referenceLink="//@navigationRule.0/@navigationCase.4/@toViewId|" inlinks="pf17060450123847" path="/geo/control_point.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="geo/interest_point.xhtml" id="pf170604501238412" referenceLink="//@navigationRule.0/@navigationCase.5/@toViewId|" inlinks="pf17060450123848" path="/geo/interest_point.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="geo/route.xhtml" id="pf170604501238413" referenceLink="//@navigationRule.0/@navigationCase.6/@toViewId|" inlinks="pf17060450123849" path="/geo/route.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="geo/fence.xhtml" id="pf170604501238414" referenceLink="//@navigationRule.0/@navigationCase.7/@toViewId|" inlinks="pf170604501238410" path="/geo/fence.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="sysadmin/customer.xhtml" id="pf17064028936509" referenceLink="//@navigationRule.0/@navigationCase.1/@toViewId|" inlinks="pf17064028936506" path="/sysadmin/customer.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="sysadmin/company.xhtml" id="pf170640289365010" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf17064028936507" path="/sysadmin/company.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="sysadmin/login.xhtml" id="pf170640289365011" referenceLink="//@navigationRule.0/@navigationCase.2/@toViewId|" inlinks="pf17064028936508" path="/sysadmin/login.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="administration/target.xhtml" id="pf170640461032513" referenceLink="//@navigationRule.0/@navigationCase.4/@toViewId|" inlinks="pf170640461032512" path="/administration/target.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="administration/device.xhtml" id="pf17065599412391" referenceLink="//@navigationRule.0/@navigationCase.4/@toViewId|" inlinks="pf17065599412380" path="/administration/device.xhtml"/>
+  <links id="pf17060400188051" target="pf17060400188063" source="pf17060400188050" outcome="SYS_LOGOUT"/>
+  <links id="pf17060450123847" target="pf170604501238411" source="pf17060400188050" outcome="control_point"/>
+  <links id="pf17060450123848" target="pf170604501238412" source="pf17060400188050" outcome="interest_point"/>
+  <links id="pf17060450123849" target="pf170604501238413" source="pf17060400188050" outcome="route"/>
+  <links id="pf170604501238410" target="pf170604501238414" source="pf17060400188050" outcome="fence"/>
+  <links id="pf17064028936506" target="pf17064028936509" source="pf17060400188050" outcome="customer"/>
+  <links id="pf17064028936507" target="pf170640289365010" source="pf17060400188050" outcome="company"/>
+  <links id="pf17064028936508" target="pf170640289365011" source="pf17060400188050" outcome="login"/>
+  <links id="pf170640461032512" target="pf170640461032513" source="pf17060400188050" outcome="target"/>
+  <links id="pf17065599412380" target="pf17065599412391" source="pf17060400188050" outcome="device"/>
+</pageflow:Pageflow>

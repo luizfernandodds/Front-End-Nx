@@ -1,0 +1,196 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="/templates/administration_list.xhtml"
+	xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+	xmlns:p="http://primefaces.org/ui" xmlns:ui="jakarta.faces.facelets">
+
+	<ui:param name="headTitle" value="#{msg.protocol_admin_msg_head}" />
+	<ui:param name="buttonNew" value="#{msg.protocol_admin_new}" />
+	<ui:param name="beanClass" value="#{protocolController}" />
+
+	<ui:define name="head">
+
+		<p:growl id="growl" showDetail="true" life="6000" />
+		<ui:include src="/resources/includes/map_define.xhtml" />
+		
+		<h:outputScript name="main_grid.js" library="js" />
+		<h:outputScript name="utils.js" library="js" />
+		<h:outputScript name="channel.js" library="js" />
+		<h:outputScript name="chart.js" library="js" />
+		<h:outputScript name="atlas.js" library="js" />
+		<h:outputScript name="report.js" library="js" />
+	
+    	<h:outputScript target="body">
+    		function onBodyLoad() {
+    			if(document.getElementById('data_form:obj_id').value!=""){
+	        	 	document.getElementById('data_form:button_edit').click();
+	        	}
+	        }
+	       
+	       
+			$(window).on('load',function() {
+				MapLayer.configure({loadExecute : function() { 
+
+				}});
+				MapLayer.startup();
+				onBodyLoad();
+			});
+		</h:outputScript>
+					
+		<style type="text/css">
+			#map_canvas {
+				width: 100%;
+				height: 350px;
+				border: 1px solid #ccc;
+			}	
+		</style>
+	</ui:define>
+	
+	<ui:define name="title">#{msg.interest_point_title}</ui:define>
+
+	<ui:define name="content">
+		<h:form id="data_form" >
+			<p:panel rendered="#{interestPointController.renderListForm eq false}">
+			<div class="col-12" >
+				<div class="card">
+					<h5>#{msg.interest_point_cad_title}</h5>
+					<div id="gr2">
+						<div id="map_canvas">
+						    <div id="popup" >
+						      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+						      <div id="popup-content"></div>
+						    </div>
+					    </div>			
+					</div>  
+			
+					<div class="ui-fluid formgrid grid">
+						<div class="field col-12 md:col-4">
+							<h:outputLabel for="customer" value="#{msg.interest_point_customer}" rendered="#{auth.hasRole('target_clients_child')}" />
+							<p:selectOneMenu id="customer" rendered="#{auth.hasRole('target_clients_child')}"
+								value="#{interestPointController.interestPoint.customer}" converter="entityConverter" filter="true" filterMatchMode="contains">
+								<f:selectItem itemLabel="#{msg.login_client_admin_select}" itemValue="0" />
+								<f:selectItems value="#{interestPointController.listCustomer}" var="s" itemValue="#{s}" itemLabel="#{s.name}" />
+							</p:selectOneMenu>
+							<p:message id="clientMessage" for="client" />
+						</div>
+						<div class="field col-12 md:col-6">
+							<h:outputLabel for="name" value="#{msg.interest_point_name}" />
+							<p:inputText id="name" value="#{interestPointController.interestPoint.name}" required="true" requiredMessage="#{msg.field_required} (#{msg.poc_admin_name})" />
+							<p:message id="nameMessage" for="name" />
+						</div>
+						<div class="field col-12 md:col-6">
+							<h:outputLabel for="address" value="#{msg.lbl_col_address}" />
+							<p:inputText id="address" value="#{interestPointController.interestPoint.address}" required="true"
+								requiredMessage="#{msg.field_required} (#{msg.lbl_col_address})">
+						            <p:ajax event="blur" listener="#{interestPointController.getGeocodingPoint()}" oncomplete="MapLayer.reset(); MapLayer.addControlPoint('wkt', 'radius','teste');MapLayer.zoom('boundingbox')" 
+						            update="wkt radius coordinate boundingbox"/>
+							</p:inputText>
+							<p:message id="addressMessage" for="address" />
+						</div>
+						
+						<div class="field col-12 md:col-6">
+							<h:outputLabel for="desc" value="#{msg.interest_point_description}" />
+							<p:inputTextarea id="desc" value="#{interestPointController.interestPoint.description}" />
+						</div>
+						
+					</div>
+
+					<div class="grid button-demo">
+						<h:panelGrid columns="3">
+							<p:commandButton id="buttonDataBack" value="#{msg.header_buton_back}"
+								action="#{interestPointController.back}" process="@this" update="data_form"
+								styleClass="ui-button-raised ui-button-secondary p-mr-2 p-mb-2" />
+
+							<p:commandButton id="buttonDataClean" value="#{msg.header_buton_clean}"
+								action="#{interestPointController.reset}" update="data_form"
+								styleClass="ui-button-raised p-mr-2 p-mb-2" process="@this" />
+
+							<p:commandButton id="buttonDataSave" value="#{msg.header_button_save}"
+								action="#{interestPointController.save}" update="data_form growl"
+								styleClass="ui-button-raised p-mr-2 p-mb-2" process="@form" />
+
+						</h:panelGrid>
+					</div>
+				</div>
+			</div>
+		</p:panel>
+
+		<p:panel rendered="#{protocolController.renderListForm eq true}">
+
+			<div class="grid crud-demo">
+				<div class="col-12" >
+					<div class="card">
+						<ui:insert name="viewname" />
+						<p:dataTable id="avaliableList" var="list" reflow="true" paginator="true" scrollable="true"
+							value="#{interestPointController.listControlPoint}" widgetVar="dataTable"
+							selection="true" rows="100" rowsPerPageTemplate="100,500,1000"
+							rowKey="#{list.id}" rowkey="avaliableList" emptyMessage="#{msg.admin_empty_list}"
+							paginatorAlwaysVisible="true" filteredValue="#{interestPointController.filteredInterestPoint}"
+							draggableColumns="true" paginatorPosition="bottom">
+
+							<f:facet name="header">
+								<div class="products-table-header">
+									<div>
+									</div>
+									<div class="ui-inputgroup">
+                                      <span class="filter-container">
+                                        <p:inputText id="query" value="#{interestPointController.nameInterestPoint}" placeholder="#{msg.interest_point_name_search}"/>
+                                        <p:commandButton value="#{msg.header_button_find}" action="#{interestPointController.searchInterestPoint}" update="data_form:avaliableList growl"/> 
+                                    </span>
+                                    </div>
+                                </div>    
+                            </f:facet>
+                            
+							<p:column headerText="#{msg.lbl_client_name}"
+								filterBy="#{list.customer.name}" sortBy="#{list.customer.name}"
+								filterMatchMode="contains" filterStyle="width: 80%;"
+								rendered="#{auth.hasRole('target_clients_child')}">
+								<h:outputText
+									value="#{not empty list.client.clientOwner.name and auth.hasRole('sysadmin_super_client') ? (list.client.clientOwner.name.concat(' | ').concat(list.client.name)) : (list.client.name)}" />
+							</p:column>
+							<p:column headerText="#{msg.interest_point_name}" filterBy="#{list.name}"
+								sortBy="#{list.name}" filterMatchMode="contains" filterStyle="width: 80%;">
+								<h:outputText value="#{list.name}" />
+							</p:column>
+							<p:column headerText="#{msg.interest_point_description}"
+								filterBy="#{list.description}" sortBy="#{list.description}"
+								filterMatchMode="contains" filterStyle="width: 80%;">
+								<h:outputText value="#{list.description}" />
+							</p:column>
+							<p:column headerText="#{msg.interest_point_address}"
+								filterBy="#{list.address}" sortBy="#{list.address}"
+								filterMatchMode="contains" filterStyle="width: 80%;">
+								<h:outputText value="#{list.address}" />
+							</p:column>
+							<p:column headerText="#{msg.interest_point_create_date}"
+								filterBy="#{interestPointController.formatTimeZone(list.createdate)}"
+								sortBy="#{list.createdate}" filterMatchMode="contains"
+								filterStyle="width: 80%;">
+								<h:outputText value="#{interestPointController.formatTimeZone(list.createdate)}" />
+							</p:column>
+
+							<p:column headerText="#{msg.header_button_action}" style="width:82px;text-align: center">
+								<p:commandButton icon="pi pi-pencil" title="#{msg.protocol_admin_edit}"
+									styleClass="edit-button rounded-button ui-button-success"
+									action="#{protocolController.populateControlPoint(list)}">
+									<f:setPropertyActionListener value="#{list}" target="#{interestPointController.protocol}" />
+									<f:param name="protocol" value="#{list}" />
+								</p:commandButton>
+
+								<p:commandButton id="buttonDataRemove" action="#{interestPointController.remove}"
+									styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
+									icon="pi pi-times" process="@this" update="avaliableList growl">
+									<f:setPropertyActionListener value="#{list}" target="#{interestPointController.controlPoint}" />
+									<p:confirm header="#{msg.control_point_button_remove}"
+										message="#{msg.admin_confirm_remove_text}"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+
+							</p:column>
+						</p:dataTable>
+					</div>
+				</div>
+			</div>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

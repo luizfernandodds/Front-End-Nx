@@ -1,0 +1,76 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="/templates/administration_cad.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:param name="headTitle" value="#{msg.device_protocol_admin_msg_head}" />
+	<ui:param name="beanClass" value="#{deviceProtocolController}" />
+
+	<ui:define name="head">
+		<p:growl id="growl" showDetail="true" life="6000" />
+	
+		<style type="text/css">
+		.ui-outputlabel {
+			display: block;
+			margin: 1em 0
+		}
+		
+		.ui-selectonemenu, .ui-autocomplete {
+			margin-bottom: 1em;
+		}
+		
+		.ui-slider {
+			margin-bottom: 2em;
+		}
+		</style>
+	</ui:define>
+
+	<ui:define name="title">#{msg.device_protocol_admin_msg_head}</ui:define>
+	<ui:define name="content">
+		<h:form id="data_form">
+	        <div class="p-grid ui-fluid">
+	            <div class="p-col-12">
+	                <div class="card">
+						<h5>#{msg.device_protocol_admin_title}</h5>
+						<div class="p-grid">
+							<div class="p-col-12 p-md-4">
+								<h:outputLabel for="name" value="#{msg.device_protocol_admin_name}" />
+								<p:inputText id="name" value="#{deviceProtocolController.protocol.name}" required="true"
+									requiredMessage="#{msg.field_required} (#{msg.device_protocol_admin_name})" />
+								<p:message id="nameMessage" for="name" />
+							</div>
+							<div class="p-col-12 p-md-4">
+								<h:outputLabel for="provider" value="#{msg.device_protocol_admin_provider}" />
+								<p:selectOneMenu id="provider" value="#{deviceProtocolController.protocol.provider.id}" filter="true"
+									filterMatchMode="contains" required="true" requiredMessage="#{msg.field_required} (#{msg.device_protocol_admin_provider})">
+									<f:selectItem itemLabel="#{msg.device_protocol_admin_provider_select}" itemValue="" />
+									<f:selectItems value="#{deviceProtocolController.providers}" var="s"
+										itemValue="#{s.id}" itemLabel="#{s.name}" />
+									<p:ajax listener="#{clientController.handleStateChange}" async="true" /> 
+								</p:selectOneMenu>
+								<p:message id="providerMessage" for="provider" />
+							</div>
+							<div class="p-col-12 p-md-4">
+								<h:outputLabel for="sysid" value="#{msg.device_protocol_admin_sysid}" />
+								<p:inputText id="sysid" value="#{deviceProtocolController.protocol.sys_id}" required="true"
+									requiredMessage="#{msg.field_required} (#{msg.device_protocol_admin_sysid})" />
+								<p:message id="sysidMessage" for="sysid" />
+							</div>
+						</div>
+						<h:panelGrid columns="3">
+							<p:commandButton id="buttonDataBack" value="#{msg.header_buton_back}" action="#{deviceProtocolController.back}" process="@this" styleClass="ui-button-raised ui-button-secondary p-mr-2 p-mb-2"/>
+
+							<p:commandButton id="buttonDataClean" value="#{msg.header_buton_clean}" action="#{deviceProtocolController.reset}" update="data_form" styleClass="ui-button-raised p-mr-2 p-mb-2" process="@this"/>
+								
+							<p:commandButton id="buttonDataSave" value="#{msg.header_button_save}" action="#{deviceProtocolController.save}" update="data_form growl" styleClass="ui-button-raised p-mr-2 p-mb-2" process="@form"/>
+											
+						</h:panelGrid>
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

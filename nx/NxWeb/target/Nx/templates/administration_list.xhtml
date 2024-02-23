@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="jakarta.faces.html"
+	xmlns:f="jakarta.faces.core"
+	xmlns:ui="jakarta.faces.facelets" 	
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layout/template.xhtml">
+	
+	<ui:define name="head">
+		<p:growl id="growl" showDetail="true" life="6000" />
+	</ui:define>
+	
+	<ui:define name="title">#{theme.title} - #{auth.version}</ui:define>
+
+	<ui:define name="viewname">
+		<p:growl id="growl" showDetail="true" life="6000" />
+		
+		<h:outputScript name="atlas.js" library="js" />
+		<h:outputScript name="utils.js" library="js" />
+		<h:outputScript name="channel.js" library="js" />
+		
+        <div class="grid list-demo">
+	        <div class="col-5">
+				<p:commandButton id="button_new" value="#{buttonNew}" icon="pi pi-plus" action="#{beanClass.renderedPage()}" styleClass="ui-button-success" style="margin-right: .5rem" 
+		         	oncomplete="#{beanClass.clean()}" immediate="true" update="data_form"/>
+            </div>
+            <div class="col-6">
+            	<h5>#{headTitle}</h5>
+            </div>
+        </div>
+                            
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" width="350">
+ 	       <p:commandButton value="#{msg.admin_confirm_yes}" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+           <p:commandButton value="#{msg.admin_confirm_no}" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times" />
+        </p:confirmDialog>
+        
+	</ui:define>
+</ui:composition>

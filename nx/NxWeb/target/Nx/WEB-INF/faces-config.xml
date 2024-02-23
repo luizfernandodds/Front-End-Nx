@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config xmlns="https://jakarta.ee/xml/ns/jakartaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd"
+              version="4.0">
+
+    <name>primefaces_ultima</name>
+    
+    <application>
+		<locale-config>
+			<default-locale>pt</default-locale>
+			<supported-locale>es</supported-locale>
+		</locale-config>
+		<resource-bundle>
+			<base-name>locale.messages</base-name>
+			<var>msg</var>
+		</resource-bundle>
+	</application>
+	
+    <component>
+        <component-type>org.primefaces.component.UltimaMenu</component-type>
+        <component-class>org.primefaces.layout.component.UltimaMenu</component-class>
+    </component>
+    
+    <render-kit>
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.UltimaMenuRenderer</renderer-type>
+            <renderer-class>org.primefaces.layout.component.UltimaMenuRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+    
+    <navigation-rule>
+		<from-view-id>*</from-view-id>
+		<navigation-case>
+			<from-outcome>company</from-outcome>
+			<to-view-id>/sysadmin/company.xhtml</to-view-id>
+		</navigation-case>		
+		<navigation-case>
+			<from-outcome>customer</from-outcome>
+			<to-view-id>/sysadmin/customer.xhtml</to-view-id>
+		</navigation-case>		
+		<navigation-case>
+			<from-outcome>login</from-outcome>
+			<to-view-id>/sysadmin/login.xhtml</to-view-id>
+		</navigation-case>		
+		<navigation-case>
+			<from-outcome>target</from-outcome>
+			<to-view-id>/administration/target.xhtml</to-view-id>
+		</navigation-case>		
+		<navigation-case>
+			<from-outcome>device</from-outcome>
+			<to-view-id>/administration/device.xhtml</to-view-id>
+		</navigation-case>		
+		<navigation-case>
+			<from-outcome>control_point</from-outcome>
+			<to-view-id>/geo/control_point.xhtml</to-view-id>
+		</navigation-case>	
+		<navigation-case> 
+			<from-outcome>interest_point</from-outcome>
+			<to-view-id>/geo/interest_point.xhtml</to-view-id>
+		</navigation-case>					
+		<navigation-case>
+			<from-outcome>route</from-outcome>
+			<to-view-id>/geo/route.xhtml</to-view-id>
+		</navigation-case>	
+		<navigation-case>
+			<from-outcome>fence</from-outcome>
+			<to-view-id>/geo/fence.xhtml</to-view-id>
+		</navigation-case>			
+	</navigation-rule>
+	
+    <navigation-rule>
+		<from-view-id>*</from-view-id>
+		<navigation-case>
+			<from-outcome>SYS_LOGOUT</from-outcome>
+			<to-view-id>/login.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+    
+</faces-config>

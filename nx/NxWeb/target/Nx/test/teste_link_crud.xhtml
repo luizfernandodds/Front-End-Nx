@@ -1,0 +1,67 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="/test/template_teste2.xhtml"
+	xmlns:h="jakarta.faces.html" 
+	xmlns:f="jakarta.faces.core"
+  	xmlns:ui="jakarta.faces.facelets"  	
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:param name="headImagePath"
+		value="/resources/images/header/icon_48_groups_folder.png" />
+	<ui:param name="headTitle" value="Crud Teste" />
+	<ui:param name="buttonNew" value="Novo" />
+	<ui:param name="buttonRemove" value="Remover" />
+
+	<ui:param name="beanClass" value="#{testeLink}" />
+
+
+	<ui:define name="data_form" >
+		<h:panelGrid id="central_area" class="admin_login" columns="1"
+			style="width: 100%;" rendered="#{beanClass.renderCadForm}" >
+
+				<p:fieldset legend="#{msg.product_fieldset}">
+					<p:panelGrid columns="2" id="panel_main">
+					<p:column>
+						<h:outputLabel for="login" value="#{msg.login_admin_login} (nome)"/>
+						<p:autoComplete id="login" minQueryLength="3" placeholder="Digite ao menos 3 letras">
+						</p:autoComplete>
+					</p:column>	
+					<p:column>
+						<h:outputLabel for="driver" value="#{msg.driver_admin_title}"/>
+						<p:autoComplete id="driver" minQueryLength="3" placeholder="Digite ao menos 3 letras">
+						</p:autoComplete>
+					</p:column>
+					
+					<p:column >
+						<h:outputLabel for="loginInfo" value="#{msg.login_admin_login} (login)"/>
+						<p:inputText id="loginInfo" style="background-color:#f7f5f5" />
+					</p:column>	
+					<p:column >
+						<h:outputLabel for="driverInfo" value="#{msg.driver_admin_title} (cnh)"/>
+						<p:inputText id="driverInfo"  style="background-color:#f7f5f5" />
+					</p:column>
+					
+					</p:panelGrid>
+				</p:fieldset>
+				
+			<h:inputHidden id="obj_id" value="112" />
+		</h:panelGrid>
+	</ui:define>
+
+	<ui:define name="list_form" >
+		<p:column headerText="#{msg.login_admin_login}"
+			filterMatchMode="contains" filterStyle="width: 80%;">
+			<h:outputText value="12" />
+		</p:column>
+		<p:column headerText="#{msg.driver_admin_title}" filterStyle="width: 80%;">
+			<h:outputText value="TESTE NOVO CRUD" />
+		</p:column>
+		
+		<p:column headerText="Ação" width="5%" >
+			<p:commandButton icon="fa icon-pencil white" title="Editar" styleClass="OrangeButton"
+				update="data_form list_form header_form" />
+			<p:commandButton icon="fa icon-trash white" title="Remover" styleClass="RedButton" 
+				oncomplete="PF('confirmDialog').show();" />
+		</p:column>
+	</ui:define>
+
+</ui:composition>

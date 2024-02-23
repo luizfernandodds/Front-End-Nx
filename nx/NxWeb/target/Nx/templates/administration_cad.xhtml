@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="jakarta.faces.html"
+	xmlns:f="jakarta.faces.core"
+	xmlns:ui="jakarta.faces.facelets" 	
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/layout/template.xhtml">
+
+	<ui:define name="title">#{theme.title} - #{auth.version}</ui:define>
+
+    <ui:define name="viewname">
+        <p:growl id="growl" showDetail="true" life="6000"/>
+
+		<h:outputScript name="atlas.js" library="js" />
+		<h:outputScript name="utils.js" library="js" />
+    	<h:outputScript name="channel.js" library="js" />
+    
+        <li>#{msg.template_administration}</li>     
+        <li><i class="fa fa-angle-right"></i></li> 
+        <li><p:link outcome="/administration/login_cad">#{headTitle}</p:link></li>
+        <div align="left">
+			<h:panelGrid columns="2">
+				<h:panelGrid columns="4" style="padding-left: 30px">
+					<p:commandButton id="button_new" value="#{buttonNew}"
+						rendered="#{not empty buttonNew}" oncomplete="#{beanClass.clean()}" action="#{beanClass.pageRedirectNew()}" />
+					<ui:insert name="header_button_1" />
+					<p:commandButton id="button_back" value="#{buttonBack}" oncomplete="#{beanClass.clean()}" action="#{beanClass.back}"
+						rendered="#{not empty buttonBack}" styleClass="ui-button-raised ui-button-secondary p-mr-2 p-mb-2" />
+					<ui:insert name="header_button_2" />
+							
+				</h:panelGrid>
+			</h:panelGrid>
+			<ui:insert name="header_button_3" />        
+		</div>
+
+	    <p:confirmDialog id="confirm_panel" widgetVar="confirmDialog" global="true" showEffect="fade" hideEffect="fade">
+	        <p:commandButton id="confirm_yes" value="#{msg.admin_confirm_yes}" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+	        <p:commandButton id="confirm_no" value="#{msg.admin_confirm_no}" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+	    </p:confirmDialog>
+
+	</ui:define>
+
+</ui:composition>

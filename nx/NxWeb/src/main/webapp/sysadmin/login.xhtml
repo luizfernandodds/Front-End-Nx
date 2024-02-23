@@ -1,0 +1,203 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="/templates/administration_list.xhtml"
+	xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+	xmlns:p="http://primefaces.org/ui" xmlns:ui="jakarta.faces.facelets">
+
+	<ui:param name="headTitle" value="#{msg.login_admin_login}" />
+	<ui:param name="buttonNew" value="#{msg.login_admin_new}" />
+	<ui:param name="beanClass" value="#{loginController}" />
+
+	<ui:define name="title">#{msg.login_admin_login}</ui:define>
+
+	<ui:define name="content">
+		<h:form id="data_form" >
+			<p:panel rendered="#{loginController.renderListForm eq false}">
+				<div class="col-12">
+					<div class="card">
+						<h5>#{msg.customer_title}</h5>
+						
+						<p:tabView>
+							<p:tab title="#{msg.login_admin_fieldset}">
+								<div class="ui-fluid formgrid grid">
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="name" value="#{msg.login_admin_name}" />
+										<p:inputText id="name" value="#{loginController.login.name}" required="true"
+											requiredMessage="#{msg.field_required} (#{msg.login_admin_name})" />
+										<p:message id="nameMessage" for="name" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="login" value="#{msg.login_admin_login}" />
+										<p:inputText id="login" value="#{loginController.login.login}" required="true" maxlength="25"
+											onblur="value=value.toLowerCase().replace(/[ $-]/g, '')"
+											requiredMessage="#{msg.field_required} (#{msg.login_admin_login})" />
+										<p:message id="loginMessage" for="login" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="email" value="#{msg.login_admin_email}" />
+										<p:inputText id="email" value="#{loginController.login.email}" required="true" autocomplete="off"
+											requiredMessage="#{msg.field_required} (#{msg.login_admin_email})" />
+										<p:message id="emailMessage" for="email" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="pass" value="#{msg.login_admin_pass}" />
+										<p:password id="pass" value="#{loginController.login.password}" autocomplete="off" redisplay="true" />
+										<p:message id="passMessage" for="pass" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="passRe" value="#{msg.login_admin_repass}" />
+										<p:password id="passRe" value="#{loginController.rePassword}" autocomplete="off" redisplay="true" />
+										<p:message id="passReMessage" for="passRe" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="login_type"
+											value="#{msg.login_admin_type}" />
+										<p:selectOneMenu id="login_type" filter="true" filterMatchMode="contains" value="#{loginController.login.profile.id}" required="true"
+											requiredMessage="#{msg.field_required} (#{msg.login_admin_type})">
+											<f:selectItem itemLabel="#{msg.login_profile_admin_select}"
+												itemValue="" />
+											<f:selectItems value="#{loginController.profiles}" var="s" itemValue="#{s.id}"
+												itemLabel="#{loginController.getProfileName(s)}" />
+											<p:ajax update="login_role" listener="#{loginController.handleLoginTypeChange}" async="true" />
+										</p:selectOneMenu>
+										<p:message id="login_typeMessage" for="login_type" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="customer" value="#{msg.login_admin_client}" />
+										<p:selectOneMenu id="customer" value="#{loginController.login.customer.id}" filter="true"
+											filterMatchMode="contains" required="true" disabled="#{loginController.listCustomer.size() lt 2}"
+											requiredMessage="#{msg.field_required} (#{msg.login_admin_client})">
+											<f:selectItem itemLabel="#{msg.login_client_admin_select}" itemValue="0" />
+											<f:selectItems value="#{loginController.listCustomer}" var="s" itemValue="#{s.id}" itemLabel="#{s.name}" />
+											<p:ajax update="login_target" listener="#{loginController.handleCustomerChange}" async="true" />
+										</p:selectOneMenu>
+										<p:message id="customerMessage" for="customer" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="change" value="#{msg.login_admin_chpass}" />
+										<p:selectBooleanCheckbox id="change" value="#{loginController.login.passChange}" />
+										<p:message id="changeMessage" for="change" />
+									</div>
+								</div>
+							</p:tab>
+
+							<p:tab title="#{msg.login_admin_login_target}">
+								<div class="ui-fluid formgrid grid">
+									<div class="field col-12 md:col-6">
+									</div>
+								</div>
+							</p:tab>
+							<p:tab title="#{msg.login_admin_login_role_log}">
+								<div class="ui-fluid formgrid grid">
+									<div class="field col-12 md:col-6">
+									</div>
+								</div>
+							</p:tab>
+						</p:tabView>
+						<div class="grid button-demo">
+							<h:panelGrid columns="3">
+								<p:commandButton id="buttonDataBack" value="#{msg.header_buton_back}"
+									action="#{loginController.back}" process="@this" update="data_form"
+									styleClass="ui-button-raised ui-button-secondary p-mr-2 p-mb-2" />
+
+								<p:commandButton id="buttonDataClean" value="#{msg.header_buton_clean}"
+									action="#{loginController.reset}" update="data_form"
+									styleClass="ui-button-raised p-mr-2 p-mb-2" process="@this" />
+
+								<p:commandButton id="buttonDataSave" value="#{msg.header_button_save}"
+									action="#{loginController.save}" update="data_form growl"
+									styleClass="ui-button-raised p-mr-2 p-mb-2" process="@form" />
+
+							</h:panelGrid>
+						</div>
+						
+					</div>
+				</div>
+
+			</p:panel>
+
+			<p:panel rendered="#{loginController.renderListForm eq true}">
+				<div class="grid crud-demo">
+					<div class="col-12" >
+						<div class="card">
+							<ui:insert name="viewname" />
+							<p:dataTable id="avaliableList" var="list" reflow="true" paginator="true" scrollable="true"
+								value="#{loginController.listLogin}" widgetVar="dataTable"
+								selection="true" rows="100" rowsPerPageTemplate="100,500,1000"
+								rowKey="#{list.id}" rowkey="avaliableList" emptyMessage="#{msg.admin_empty_list}"
+								paginatorAlwaysVisible="true" filteredValue="#{loginController.filteredLogins}"
+								draggableColumns="true" paginatorPosition="bottom">
+	
+								<f:facet name="header">
+									<div class="products-table-header">
+										<div>
+										</div>
+										<div class="ui-inputgroup">
+	                                      <span class="filter-container">
+	                                        <p:inputText id="query" value="#{loginController.nameLogin}" placeholder="#{msg.login_admin_name_search}"/>
+	                                        <p:commandButton value="#{msg.header_button_find}" action="#{loginController.searchLogin}" update="data_form:avaliableList growl"/> 
+	                                    </span>
+	                                    </div>
+	                                </div>    
+	                            </f:facet>
+	                            
+								<p:column headerText="#{msg.login_admin_client}" style="width:12%;" 
+									filterBy="#{not empty list.client.clientOwner.name and auth.hasRole('sysadmin_super_client') ? (list.client.clientOwner.name.concat(' | ').concat(list.client.name)) : (list.client.name)}"
+									sortBy="#{not empty list.client.clientOwner.name and auth.hasRole('sysadmin_super_client') ? (list.client.clientOwner.name.concat(' | ').concat(list.client.name)) : (list.client.name)}"
+									filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText
+										value="#{not empty list.client.clientOwner.name and auth.hasRole('sysadmin_super_client') ? (list.client.clientOwner.name.concat(' | ').concat(list.client.name)) : (list.client.name)}" />
+								</p:column>
+																	
+								<p:column headerText="#{msg.login_admin_name}" filterBy="#{list.name}" style="width:30%;" 
+									sortBy="#{list.name}" filterMatchMode="contains"
+									filterStyle="width: 100%;">
+									<h:outputText value="#{list.name}" />
+								</p:column>
+								<p:column headerText="#{msg.login_admin_login}" style="width:12%;"
+									filterBy="#{list.login}" sortBy="#{list.login}"
+									filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{list.login}" />
+								</p:column>
+								
+								<p:column headerText="#{msg.login_admin_type}" style="width:12%;"
+									filterBy="#{loginController.getProfileName(list.profile)}"
+									sortBy="#{loginController.getProfileName(list.profile)}"
+									filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{loginController.getProfileName(list.profile)}" />
+								</p:column>
+								
+								<p:column headerText="#{msg.login_admin_lastlogin}" style="width:15%;"
+									filterBy="#{list.lastLogin}" sortBy="#{list.lastLogin}"
+									filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{loginController.getFormatDate(list.dateLastLogin)}" />
+								</p:column>
+								
+								<p:column headerText="#{msg.login_admin_login_insert}" style="width:15%;"
+									filterBy="#{loginController.getFormatDate(list.dateCreate)}"
+									sortBy="#{list.insertDate}" filterMatchMode="contains"
+									filterStyle="width: 100%;">
+									<h:outputText value="#{loginController.getFormatDate(list.dateCreate)}" />
+								</p:column>
+	
+								<p:column headerText="#{msg.header_button_action}" style="width:82px;text-align: center">
+									<p:commandButton icon="pi pi-pencil" title="#{msg.customer_edit}"
+										styleClass="edit-button rounded-button ui-button-success" action="#{loginController.populateLogin()}">
+										<f:setPropertyActionListener value="#{list}" target="#{loginController.login}" />
+									</p:commandButton>
+
+									<p:commandButton id="buttonDataRemove" styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
+										action="#{loginController.remove}" icon="pi pi-times" process="@this" update="avaliableList growl">
+										<f:setPropertyActionListener value="#{list}" target="#{customerController.login}" />
+										<p:confirm header="#{msg.customer_remove}" message="#{msg.admin_confirm_remove_text}"
+											icon="pi pi-exclamation-triangle" />
+									</p:commandButton>
+
+								</p:column>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>			
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

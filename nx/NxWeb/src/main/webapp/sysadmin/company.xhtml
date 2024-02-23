@@ -1,0 +1,176 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="/templates/administration_list.xhtml"
+	xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+	xmlns:p="http://primefaces.org/ui" xmlns:ui="jakarta.faces.facelets">
+
+	<ui:param name="headTitle" value="#{msg.company_msg_head}" />
+	<ui:param name="buttonNew" value="#{msg.company_new}" />
+	<ui:param name="beanClass" value="#{companyController}" />
+
+	<ui:define name="title">#{msg.company_msg_head}</ui:define>
+
+	<ui:define name="content">
+		<h:form id="data_form" >
+			<p:panel id="panel_data" rendered="#{companyController.renderListForm eq false}">
+				<div class="col-12" >
+					<div class="card">
+						<h5>#{msg.company_title}</h5>
+						<p:tabView>
+							<p:tab title="#{msg.company_fieldset}">
+								<div class="ui-fluid formgrid grid">
+									<div class="field col-12 md:col-6">
+										<h:outputLabel for="name" value="#{msg.company_name}" />
+										<p:inputText id="name" value="#{companyController.company.name}" required="true"
+											requiredMessage="#{msg.field_required} (#{msg.company_name})" />
+										<p:message id="nameMessage" for="name" />
+									</div>
+									<div class="field col-12 md:col-3">
+										<h:outputLabel for="cpnj" value="#{msg.company_cnpj}" />
+										<p:inputText id="cpnj" value="#{companyController.company.cpnj}" required="true"
+											requiredMessage="#{msg.field_required} (#{msg.company_cpnj})" />
+										<p:message id="cpnjMessage" for="cpnj" />
+									</div>						
+									<div class="field col-12 md:col-6">
+										<h:outputLabel for="address" value="#{msg.company_address}" />
+										<p:inputText id="address" value="#{companyController.company.address}" required="true"
+											requiredMessage="#{msg.field_required} (#{msg.company_address})" />
+										<p:message id="addressMessage" for="address" />
+									</div>	
+								</div>
+							</p:tab>
+							
+							<p:tab title="#{msg.company_address}">
+									<div class="ui-fluid formgrid grid">
+										<div class="field col-12 md:col-6">
+											<h:outputLabel for="state" value="#{msg.company_state}" />
+											<p:selectOneMenu id="state" value="#{companyController.company.city.state.id}" 
+													filter="true" filterMatchMode="contains" required="true" requiredMessage="#{msg.field_required} (#{msg.company_state})">
+												<f:selectItem itemLabel="#{msg.company_state_select}"
+													itemValue="" />
+												<f:selectItems value="#{companyController.listState}" var="s"
+													itemValue="#{s.id}" itemLabel="#{s.name}" />
+	<!-- 											<p:ajax update="city" listener="#{companyController.handleStateChange}" -->
+	<!-- 												async="true" /> -->
+												
+											</p:selectOneMenu>
+											<p:message id="stateMessage" for="state" />
+										</div>
+										<div class="field col-12 md:col-6">
+											<h:outputLabel for="city" value="#{msg.company_city}" />
+											<p:selectOneMenu id="city" value="#{companyController.company.city.id}" filter="true" filterMatchMode="contains" 
+													required="true" disabled="#{!companyController.editable}" requiredMessage="#{msg.field_required} (#{msg.company_city})">
+												<f:selectItem itemLabel="#{msg.company_city_select}" itemValue="" />
+												<f:selectItems value="#{companyController.listCity}" var="s" itemValue="#{s.id}" itemLabel="#{s.name}" />
+											</p:selectOneMenu>
+											<p:message id="cityMessage" for="city" />
+										</div>
+										<div class="field col-12 md:col-6">
+											<h:outputLabel for="addr" value="#{msg.company_address}" />
+											<p:inputText id="addr" value="#{companyController.company.address}"	required="true" disabled="#{!companyController.editable}"
+												requiredMessage="#{msg.field_required} (#{msg.company_address})" />
+											<p:message id="addrMessage" for="addr" />
+										</div>
+										<div class="field col-12 md:col-6"> 
+											<h:outputLabel for="number" value="#{msg.company_number}" />
+											<p:inputText id="number" value="#{companyController.company.number}" required="true"
+												disabled="#{!companyController.editable}" requiredMessage="#{msg.field_required} (#{msg.company_number})" />
+											<p:message id="numberMessage" for="number" />
+										</div>
+										<div class="field col-12 md:col-6">
+											<h:outputLabel for="zip" value="#{msg.company_zip}" />
+											<p:inputMask id="zip" value="#{companyController.company.zip}" disabled="#{!companyController.editable}"
+												required="true" mask="99.999-999" requiredMessage="#{msg.field_required} (#{msg.company_zip})" />
+											<p:message id="zipMessage" for="zip" />
+										</div>
+									</div>
+							</p:tab>
+						</p:tabView>	
+	
+						<div class="grid button-demo">
+							<h:panelGrid columns="3">
+								<p:commandButton id="buttonDataBack" value="#{msg.header_buton_back}"
+									action="#{companyController.back}" process="@this" update="data_form"
+									styleClass="ui-button-raised ui-button-secondary p-mr-2 p-mb-2" />
+	
+								<p:commandButton id="buttonDataClean" value="#{msg.header_buton_clean}"
+									action="#{companyController.reset}" update="data_form"
+									styleClass="ui-button-raised p-mr-2 p-mb-2" process="@this" />
+	
+								<p:commandButton id="buttonDataSave" value="#{msg.header_button_save}"
+									action="#{companyController.save}" update="data_form growl"
+									styleClass="ui-button-raised p-mr-2 p-mb-2" process="@form" />
+	
+							</h:panelGrid>
+						</div>
+					</div>
+				</div>
+		    </p:panel>
+
+		    <p:panel id="panel_list" rendered="#{companyController.renderListForm eq true}">
+				<div class="grid crud-demo">
+					<div class="col-12" >
+						<div class="card">
+							<ui:insert name="viewname" />
+							<p:dataTable id="avaliableList" var="list" reflow="true" paginator="true" scrollable="true"
+								value="#{companyController.listCompany}" widgetVar="dataTable"
+								selection="true" rows="100" rowsPerPageTemplate="100,500,1000"
+								rowKey="#{list.id}" rowkey="avaliableList" emptyMessage="#{msg.admin_empty_list}"
+								paginatorAlwaysVisible="true" filteredValue="#{companyController.filteredCompany}"
+								draggableColumns="true" paginatorPosition="bottom">
+	
+								<f:facet name="header">
+									<div class="products-table-header">
+										<div>
+										</div>
+										<div class="ui-inputgroup">
+	                                      <span class="filter-container">
+	                                        <p:inputText id="query" value="#{companyController.nameCompany}" placeholder="#{msg.login_admin_name_search}"/>
+	                                        <p:commandButton value="#{msg.header_button_find}" action="#{companyController.searchCompany}" update="data_form:avaliableList growl"/> 
+	                                    </span>
+	                                    </div>
+	                                </div>    
+	                            </f:facet>
+	                            
+								<p:column headerText="#{msg.company_name}"
+									filterBy="#{list.name}" sortBy="#{list.name}"
+									filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{list.name}" />
+								</p:column>
+	
+								<p:column headerText="#{msg.company_cnpj}"
+									filterBy="#{list.cnpj}" sortBy="#{list.cnpj}"
+									filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{list.cnpj}" />
+								</p:column>
+	
+								<p:column headerText="#{msg.company_city}"
+									filterBy="#{list.city.name}" sortBy="#{list.city.name}"
+									filterMatchMode="contains" filterStyle="width: 80%;">
+									<h:outputText value="#{list.name}" />
+								</p:column>
+	
+								<p:column headerText="#{msg.header_button_action}"
+									style="width:82px;text-align: center">
+									<p:commandButton icon="pi pi-pencil" title="#{msg.company_edit}"
+										styleClass="edit-button rounded-button ui-button-success" action="#{companyController.populateCompany(list)}">
+										<f:setPropertyActionListener value="#{list}" target="#{companyController.company}" />
+										<f:param name="company" value="#{list}" />
+									</p:commandButton>
+	
+									<p:commandButton id="buttonDataRemove" action="#{companyController.remove}" 
+										styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
+										icon="pi pi-times" process="@this" update="avaliableList growl">
+										<f:setPropertyActionListener value="#{list}" target="#{companyController.company}" />
+										<p:confirm header="#{msg.company_remove}" message="#{msg.admin_confirm_remove_text}"
+											icon="pi pi-exclamation-triangle" />
+									</p:commandButton>
+	
+								</p:column>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

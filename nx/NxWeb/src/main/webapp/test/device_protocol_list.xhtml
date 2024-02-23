@@ -1,0 +1,123 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="/templates/administration_list.xhtml"
+	xmlns:h="jakarta.faces.html"
+	xmlns:f="jakarta.faces.core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="jakarta.faces.facelets" >
+
+	<ui:param name="headTitle" value="#{msg.device_protocol_admin_msg_head}" />
+	<ui:param name="buttonNew" value="#{msg.device_protocol_admin_new}" />
+	<ui:param name="beanClass" value="#{deviceProtocolController}" />
+
+
+	<ui:define name="head">
+       <p:growl id="growl" showDetail="true" life="6000" />
+       
+		<style type="text/css">
+		.cars-datalist .text-column p:last-child {
+			color: #757575;
+		}
+		 
+		.cars-datalist .car-item {
+			padding: 8px 14px;
+		}
+		
+		.cars-datalist .car-item img, .cars-datalist .car-item .car-details {
+			display: inline-block;
+			vertical-align: middle;
+			margin-right: 14px;
+		}
+		
+		.cars-datalist .car-item button {
+			float: right;
+		}
+		
+		.cars-datalist .ui-datalist-item:not(:last-child) {
+			border-bottom: 1px solid #dee4e9;
+		}
+		
+		.cars-datalist ul {
+			margin: 0;
+			padding: 0;
+		}
+		
+		.ui-car-display td:last-child {
+			font-weight: 700;
+		}
+		
+		@media ( max-width :640px) {
+			.cars-datalist .text-column {
+				text-align: center;
+			}
+			.ui-tree {
+				width: 100%;
+			}
+		}
+		
+		body .ui-inputfield {
+		    color: #69707A;
+		    background: #ffffff;
+		    padding: 0.5rem 0.5rem;
+		    border: 1px solid #D4D6D9;
+		    outline: 0 none;
+		    font-size: 1rem;
+		    border-radius: 0px;
+		    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+		    -webkit-appearance: none;
+		    appearance: none;
+		}		
+		</style>
+	</ui:define>
+
+	<ui:define name="title">#{msg.device_protocol_admin_msg_head}</ui:define>
+
+	<ui:define name="content">
+		<h:form id="list_form">
+            <div class="p-grid crud-demo">
+                <div class="p-col-12">
+                    <div class="card">
+						<ui:insert name="viewname" />
+						<p:dataTable id="avaliableList" var="list" reflow="true" paginator="true" scrollable="true" value="#{deviceProtocolController.protocols}" widgetVar="dataTable"
+							selection="true" rows="30" rowsPerPageTemplate="30,50,100" rowKey="#{list.id}" rowkey="avaliableList" emptyMessage="#{msg.admin_empty_list}"
+							paginatorAlwaysVisible="true" filteredValue="#{deviceProtocolController.filteredProtocols}" draggableColumns="true" paginatorPosition="bottom">
+
+							<f:facet name="header">
+								<div class="products-table-header">
+    	                            #{msg.device_protocol_admin_msg_head}
+                                </div>    
+                            </f:facet>
+
+							<p:column headerText="#{msg.device_protocol_admin_sysid}" filterBy="#{list.sys_id}" sortBy="#{list.sys_id}"
+								filterMatchMode="contains" filterStyle="width: 100%;">
+								<h:outputText value="#{list.sys_id}" />
+							</p:column>
+					
+							<p:column headerText="#{msg.device_protocol_admin_provider}" filterBy="#{list.provider.name}" sortBy="#{list.provider.name}"
+								filterMatchMode="contains" filterStyle="width: 100%;">
+								<h:outputText value="#{list.provider.name}" />
+							</p:column>
+					
+							<p:column headerText="#{msg.device_protocol_admin_name}" filterBy="#{list.name}" sortBy="#{list.name}"
+								filterMatchMode="contains" filterStyle="width: 80%;">
+								<h:outputText value="#{list.name}" />
+							</p:column>
+
+							<p:column headerText="#{msg.header_button_action}" style="width:82px;text-align: center">
+								<p:commandButton icon="pi pi-pencil" title="#{msg.device_protocol_admin_edit}" styleClass="edit-button rounded-button ui-button-success" action="#{deviceProtocolController.populateDeviceProtocol(list)}">
+									<f:setPropertyActionListener value="#{list}" target="#{deviceProtocolController.protocol}" />
+									<f:param name="protocol" value="#{list}"/>
+								</p:commandButton>
+								
+                                <p:commandButton id="buttonDataRemove" action="#{deviceProtocolController.remove}" styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2" icon="pi pi-times" process="@this" update="avaliableList growl" >
+									<f:setPropertyActionListener value="#{list}" target="#{deviceProtocolController.protocol}" />
+                                    <p:confirm header="#{msg.device_protocol_admin_remove}" message="#{msg.admin_confirm_remove_text}" icon="pi pi-exclamation-triangle" />
+                                </p:commandButton>
+                                
+							</p:column>
+						</p:dataTable>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

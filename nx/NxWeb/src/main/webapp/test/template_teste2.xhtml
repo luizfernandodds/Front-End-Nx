@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="jakarta.faces.html"
+	xmlns:f="jakarta.faces.core"
+  	xmlns:ui="jakarta.faces.facelets"  
+	xmlns:p="http://primefaces.org/ui"  template="/WEB-INF/layout/template.xhtml">
+
+	<ui:define name="content">
+
+		
+		<div class="Container100 ui-fluid" >
+			<div class="ContainerIndent">
+
+					<h:form id="header_form" prependId="false">
+						<p:growl id="growl" showDetail="true" sticky="true" />
+						<div class="Container100 ui-fluid">
+							<div class="ContainerIndent">
+								<p:panel rendered="#{!beanClass.renderCadForm}"  >
+									<div class="FontBold Fs18 hardblue" style="margin: 15px 10px">
+										<ui:insert name="header_title">
+											<!-- <p:graphicImage value="#{headImagePath}" /> -->
+											<h:outputText value="#{headTitle}" />
+										</ui:insert>
+									</div>
+									<div class="Separator"></div>
+									<ui:insert name="header_button_0" />
+
+									<div align="right">
+										<h:panelGrid columns="4">
+											<p:commandButton id="button_new" styleClass="testButton"
+												value="#{buttonNew}" rendered="#{not empty buttonNew}"
+												action="#{beanClass.buttonNew}" update="header_form data_form list_form" />
+											<ui:insert name="header_button_1" />
+										</h:panelGrid>
+										<!--<ui:insert name="header_button_3" />-->
+									</div>
+								</p:panel>
+							</div>
+						</div>
+						<p:dialog id="confirm_panel" widgetVar="confirmDialog"
+							modal="true" onShow="#{onPanelShow}" closable="false"
+							header="#{buttonRemove}" showEffect="fade" resizable="false" >
+							<br />
+							<p:outputLabel value="#{msg.admin_confirm_remove_text}" />
+							<br />
+							<br />
+							<br />
+							<p:commandButton id="confirm_yes"
+								value="#{msg.admin_confirm_yes}"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+								async="true" process="header_form"
+								update="header_form list_form data_form"
+								action="#{beanClass.remove}"
+								oncomplete="updateMenuBarGrowl(xhr, status, args); PF('confirmDialog').hide();" />
+							<p:commandButton id="confirm_no" value="#{msg.admin_confirm_no}"
+								action="#{beanClass.cancel}" icon="ui-icon-close"
+								styleClass="ui-confirmdialog-no" async="true"
+								process="header_form" update="header_form list_form data_form"
+								oncomplete="PF('confirmDialog').hide();" />
+						</p:dialog>
+					</h:form>
+
+
+					<div class="Container100 ui-fluid">
+						<div class="ContainerIndent">
+
+								<h:form id="data_form" prependId="false" >
+
+									<ui:insert name="data_form" />
+									
+									<h:panelGrid columns="4" rendered="#{beanClass.renderCadForm}" >
+										<p:commandButton id="buttonDataCancel"
+											value="#{msg.header_buton_close}" async="true"
+											process="@this" action="#{beanClass.cancel}"
+											update=" header_form list_form data_form" immediate="true" />
+										<p:commandButton id="buttonDataSave"
+											value="#{msg.header_button_save}" action="#{beanClass.save}"
+											process="data_form"
+											update="header_form, list_form, growl, data_form"
+											oncomplete="updateMenuBarGrowl(xhr, status, args);" />
+										<p:commandButton id="buttonDateRemove"
+											value="#{buttonRemove}"
+											onclick="PF('confirmDialog').show();" />
+									</h:panelGrid>
+
+								</h:form>
+
+						</div>
+					</div>
+
+
+					<div class="Container100 ui-fluid" >
+						<div class="ContainerIndent" >
+						
+							<h:form id="list_form" prependId="false" style="height: 100%;" >
+								<p:panel rendered="#{!beanClass.renderCadForm}" >
+									<p:dataTable id="avaliableList" var="list"
+										widgetVar="dataTable" rowKey="#{list.id}"
+										rowkey="avaliableList" paginator="true" rows="30"
+										scrollable="true" paginatorPosition="bottom"
+										rowsPerPageTemplate="30,50,100"
+										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+										value="#{dataList}" filteredValue="#{dataFiltered}"
+										emptyMessage="#{msg.admin_empty_list}" >
+										
+										<ui:insert name="list_form" />
+									</p:dataTable>
+								</p:panel>
+							</h:form>
+							
+						</div>
+					</div>
+
+					<p:ajaxStatus onstart="PF('statusDialog').show();"
+						onsuccess="PF('statusDialog').hide();" />
+
+					<p:dialog modal="true" widgetVar="statusDialog" resizable="false"
+						draggable="false" closable="false" showHeader="false">
+						<p:graphicImage
+							value="../../resources/sentinel-layout/images/rolling.gif"
+							width="22" height="22" />
+            &#160;<h:outputText value="#{msg.loading}" />
+					</p:dialog>
+
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

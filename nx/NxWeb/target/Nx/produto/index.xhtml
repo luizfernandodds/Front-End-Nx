@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+			    xmlns:h="jakarta.faces.html"
+			    xmlns:f="jakarta.faces.core"
+  			    xmlns:ui="jakarta.faces.facelets"                
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/layout/template.xhtml">
+
+	<ui:define name="title">
+		Cadastro de Produtos
+	</ui:define>
+		
+	<ui:define name="content">	
+		<h:messages styleClass="alert alert-success" />
+
+		<h:form>
+			<h:inputHidden value="#{produtoController.produto.id}" />
+			
+			<div class="form-group">
+				<h:outputLabel value="Nome: " for="nome" />
+				<h:inputText class="form-control" value="#{produtoController.produto.nome}" />
+			</div>
+			
+			<div class="form-group">
+				<h:outputLabel value="Preço: " for="preco" />
+				<h:inputText class="form-control" value="#{produtoController.produto.preco}" />
+			</div>	
+			
+			<div class="form-group">
+				<h:commandButton value="#{produtoController.botao}" class="btn btn-default" 
+				action="#{produtoController.salva(produtoController.produto)}"></h:commandButton>
+				<h:commandButton value="Limpar" class="btn btn-primary" action="#{produtoController.limpar()}"
+				immediate="true"></h:commandButton>
+			</div>
+			
+			
+		</h:form>
+	</ui:define>
+
+</ui:composition>

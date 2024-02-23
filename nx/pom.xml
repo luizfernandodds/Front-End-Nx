@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.nuxeo</groupId>
+	<artifactId>Nx</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+
+	<name>Sistema controle frota</name>
+	<description>Sistema controle frota</description>
+
+	<modules>
+		<module>NxCore</module>
+		<module>NxWeb</module>
+	</modules>
+	<properties>
+		<maven.compiler.release>17</maven.compiler.release>
+		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<java.version>17</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<owb.version>2.0.27</owb.version>
+		<maven-dependency-plugin.version>3.10.1</maven-dependency-plugin.version>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.8.6</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.20</version>
+				<scope>provided</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+		    <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
+   				<configuration>
+					<source>17</source>
+					<target>17</target>
+				</configuration>
+            </plugin>
+		</plugins>
+	</build>
+</project>

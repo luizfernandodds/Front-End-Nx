@@ -1,0 +1,141 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="/templates/administration_list.xhtml"
+	xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+	xmlns:p="http://primefaces.org/ui" xmlns:ui="jakarta.faces.facelets">
+
+	<ui:param name="headTitle" value="#{msg.protocol_admin_msg_head}" />
+	<ui:param name="buttonNew" value="#{msg.protocol_admin_new}" />
+	<ui:param name="beanClass" value="#{protocolController}" />
+
+	<ui:define name="title">#{msg.protocol_admin_msg_head}</ui:define>
+
+	<ui:define name="content">
+		<h:form id="data_form" >
+			<p:panel rendered="#{protocolController.renderListForm eq false}">
+			<div class="col-12" >
+				<div class="card">
+					<h5>#{msg.protocol_admin_title}</h5>
+					<div class="ui-fluid formgrid grid">
+						<div class="field col-12 md:col-6">
+							<h:outputLabel for="name" value="#{msg.protocol_admin_name}" />
+							<p:inputText id="name" value="#{protocolController.protocol.name}" required="true"
+								requiredMessage="#{msg.field_required} (#{msg.protocol_admin_name})" />
+							<p:message id="nameMessage" for="name" />
+						</div>
+						<div class="field col-12 md:col-3">
+								<h:outputLabel for="provider" value="#{msg.protocol_admin_provider}" />
+								<p:selectOneMenu id="provider" value="#{protocolController.protocol.provider.id}" filter="true"
+									filterMatchMode="contains" required="true" requiredMessage="#{msg.field_required} (#{msg.protocol_admin_provider})">
+									<f:selectItem itemLabel="#{msg.protocol_admin_provider_select}" itemValue="" />
+									<f:selectItems value="#{protocolController.providers}" var="s"
+										itemValue="#{s.id}" itemLabel="#{s.name}" />
+<!-- 									<p:ajax listener="#{clientController.handleStateChange}" async="true" />  -->
+								</p:selectOneMenu>
+								<p:message id="providerMessage" for="provider" />
+						</div>
+						<div class="field col-12 md:col-3">
+								<h:outputLabel for="sysid" value="#{msg.protocol_admin_sysid}" />
+								<p:inputText id="sysid" value="#{protocolController.protocol.sys_id}" required="true"
+									requiredMessage="#{msg.field_required} (#{msg.protocol_admin_sysid})" />
+								<p:message id="sysidMessage" for="sysid" />
+						</div>
+					</div>
+
+					<div class="grid button-demo">
+						<h:panelGrid columns="3">
+							<p:commandButton id="buttonDataBack" value="#{msg.header_buton_back}"
+								action="#{protocolController.back}" process="@this" update="data_form"
+								styleClass="ui-button-raised ui-button-secondary p-mr-2 p-mb-2" />
+
+							<p:commandButton id="buttonDataClean" value="#{msg.header_buton_clean}"
+								action="#{protocolController.reset}" update="data_form"
+								styleClass="ui-button-raised p-mr-2 p-mb-2" process="@this" />
+
+							<p:commandButton id="buttonDataSave" value="#{msg.header_button_save}"
+								action="#{protocolController.save}" update="data_form growl"
+								styleClass="ui-button-raised p-mr-2 p-mb-2" process="@form" />
+
+						</h:panelGrid>
+					</div>
+				</div>
+			</div>
+		</p:panel>
+
+		<p:panel rendered="#{protocolController.renderListForm eq true}">
+
+			<div class="grid crud-demo">
+				<div class="col-12" >
+					<div class="card">
+						<ui:insert name="viewname" />
+						<p:dataTable id="avaliableList" var="list" reflow="true"
+							paginator="true" scrollable="true"
+							value="#{protocolController.protocols}" widgetVar="dataTable"
+							selection="true" rows="100" rowsPerPageTemplate="100,500,1000"
+							rowKey="#{list.id}" rowkey="avaliableList"
+							emptyMessage="#{msg.admin_empty_list}"
+							paginatorAlwaysVisible="true"
+							filteredValue="#{protocolController.filteredProtocols}"
+							draggableColumns="true" paginatorPosition="bottom">
+
+							<f:facet name="header">
+								<div class="products-table-header">
+									<div>
+									</div>
+									<div class="ui-inputgroup">
+                                      <span class="filter-container">
+                                        <p:inputText id="query" value="#{protocolController.nameProtocol}" placeholder="#{msg.login_admin_name_search}"/>
+                                        <p:commandButton value="#{msg.header_button_find}" action="#{protocolController.searchProtocol}" update="data_form:avaliableList growl"/> 
+                                    </span>
+                                    </div>
+                                </div>    
+                            </f:facet>
+                            
+							<p:column headerText="#{msg.protocol_admin_sysid}"
+								filterBy="#{list.sys_id}" sortBy="#{list.sys_id}"
+								filterMatchMode="contains" filterStyle="width: 100%;">
+								<h:outputText value="#{list.sys_id}" />
+							</p:column>
+
+							<p:column headerText="#{msg.protocol_admin_provider}"
+								filterBy="#{list.provider.name}" sortBy="#{list.provider.name}"
+								filterMatchMode="contains" filterStyle="width: 100%;">
+								<h:outputText value="#{list.provider.name}" />
+							</p:column>
+
+							<p:column headerText="#{msg.protocol_admin_name}"
+								filterBy="#{list.name}" sortBy="#{list.name}"
+								filterMatchMode="contains" filterStyle="width: 80%;">
+								<h:outputText value="#{list.name}" />
+							</p:column>
+
+							<p:column headerText="#{msg.header_button_action}"
+								style="width:82px;text-align: center">
+								<p:commandButton icon="pi pi-pencil"
+									title="#{msg.protocol_admin_edit}"
+									styleClass="edit-button rounded-button ui-button-success"
+									action="#{protocolController.populateDeviceProtocol(list)}">
+									<f:setPropertyActionListener value="#{list}"
+										target="#{protocolController.protocol}" />
+									<f:param name="protocol" value="#{list}" />
+								</p:commandButton>
+
+								<p:commandButton id="buttonDataRemove"
+									action="#{protocolController.remove}"
+									styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
+									icon="pi pi-times" process="@this" update="avaliableList growl">
+									<f:setPropertyActionListener value="#{list}"
+										target="#{protocolController.protocol}" />
+									<p:confirm header="#{msg.protocol_admin_remove}"
+										message="#{msg.admin_confirm_remove_text}"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+
+							</p:column>
+						</p:dataTable>
+					</div>
+				</div>
+			</div>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

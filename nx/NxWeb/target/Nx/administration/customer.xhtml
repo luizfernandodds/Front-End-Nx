@@ -1,0 +1,241 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="/templates/administration_list.xhtml"
+	xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+	xmlns:p="http://primefaces.org/ui" xmlns:ui="jakarta.faces.facelets">
+
+	<ui:param name="headTitle" value="#{msg.customer_msg_head}" />
+	<ui:param name="buttonNew" value="#{msg.customer_new}" />
+	<ui:param name="beanClass" value="#{customerController}" />
+
+	<ui:define name="title">#{msg.customer_msg_head}</ui:define>
+
+	<ui:define name="content">
+		<h:form id="data_form">
+			<p:panel id="panel_data"
+				rendered="#{customerController.renderListForm eq false}">
+				<div class="col-12">
+					<div class="card">
+						<h5>#{msg.customer_title}</h5>
+						<p:tabView>
+							<p:tab title="#{msg.customer_fieldset}">
+								<div class="ui-fluid formgrid grid">
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="login" value="#{msg.customer_login}" rendered="#{customerController.superClient}"/> 
+										<p:inputText id="login" value="#{customerController.customer.loginCustomer}" required="true" disabled="#{!customerController.editable}"
+											requiredMessage="#{msg.field_required} (#{msg.customer_login})" maxlength="45" onblur="value=value.toLowerCase().replace(/[ $-]/g, '')"
+											rendered="#{customerController.superClient}"/>
+										<p:message id="loginMessage" for="login" rendered="#{customerController.superClient}" />									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="name" value="#{msg.customer_name}" />
+										<p:inputText id="name" value="#{customerController.customer.name}" required="true" disabled="#{!customerController.editable}"
+											requiredMessage="#{msg.field_required} (#{msg.customer_name})" />
+										<p:message id="nameMessage" for="name" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="docName" value="#{msg.customer_doc_name}" />
+										<p:inputText id="docName" value="#{customerController.customer.docName}"
+											disabled="#{!customerController.editable}"/>
+										<p:message id="docNameMessage" for="docName" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="docTag" value="#{msg.customer_doc_tag}" />
+										<p:inputText id="docTag" value="#{customerController.customer.docTag}" disabled="#{!customerController.editable}"/>
+										<p:message id="docTagMessage" for="docTag" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="doc" value="#{msg.customer_document}" />
+										<p:inputText id="doc" value="#{customerController.customer.document}" disabled="#{!customerController.editable}"
+											required="true" requiredMessage="#{msg.field_required} (#{msg.customer_document})"/>
+										<p:message id="docMessage" for="doc" />									
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="phone" value="#{msg.customer_phone}" />
+										<p:inputText id="phone" value="#{customerController.customer.phone}" disabled="#{!customerController.editable}"
+											required="true" requiredMessage="#{msg.field_required} (#{msg.customer_phone})"
+											mask="(99) 99999?9999" />
+										<p:message id="phoneMessage" for="phone" />									
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="fax" value="#{msg.customer_fax}" />
+										<p:inputText id="fax" value="#{customerController.customer.fax}" disabled="#{!customerController.editable}"
+											mask="(99) 99999?9999"/>
+										<p:message id="faxMessage" for="fax" />									
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="email" value="#{msg.customer_email}" />
+										<p:inputText id="email" value="#{customerController.customer.email}" disabled="#{!customerController.editable}"
+											required="true" requiredMessage="#{msg.field_required} (#{msg.customer_email})"/>
+										<p:message id="emailMessage" for="email" />									
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="active" value="#{msg.customer_active}" />
+										<p:selectBooleanCheckbox id="active" disabled="#{!customerController.editable}" value="#{customerController.customerActive}" />
+										<p:message id="activeMessage" for="active" />									
+									</div>
+									<div class="field col-12 md:col-4">
+									</div>
+								</div>
+							</p:tab>
+
+							<p:tab title="#{msg.customer_address}">
+								<div class="ui-fluid formgrid grid">
+									<div class="field col-12 md:col-6">
+										<h:outputLabel for="state" value="#{msg.customer_state}" />
+										<p:selectOneMenu id="state" value="#{customerController.customer.city.state.id}" disabled="#{!customerController.editable}"
+												filter="true" filterMatchMode="contains" required="true" requiredMessage="#{msg.field_required} (#{msg.customer_state})">
+											<f:selectItem itemLabel="#{msg.customer_select_state}" itemValue="" />
+											<f:selectItems value="#{customerController.listState}" var="s" itemValue="#{s.id}" itemLabel="#{s.name}" />
+											<p:ajax update="city" listener="#{customerController.handleStateChange}" async="true" />
+											
+										</p:selectOneMenu>
+										<p:message id="stateMessage" for="state" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="city" value="#{msg.customer_city}" />
+										<p:selectOneMenu id="city" value="#{customerController.customer.city.id}" filter="true" filterMatchMode="contains" 
+												required="true" disabled="#{!customerController.editable}" requiredMessage="#{msg.field_required} (#{msg.customer_city})">
+											<f:selectItem itemLabel="#{msg.city_select_city}" itemValue="" />
+											<f:selectItems value="#{customerController.listCity}" var="s" itemValue="#{s.id}" itemLabel="#{s.name}" />
+										</p:selectOneMenu>
+										<p:message id="cityMessage" for="city" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="addr" value="#{msg.customer_address}" />
+										<p:inputText id="addr" value="#{customerController.customer.address}"	required="true" disabled="#{!customerController.editable}"
+											requiredMessage="#{msg.field_required} (#{msg.customer_address})" />
+										<p:message id="addrMessage" for="addr" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="number" value="#{msg.customer_number}" />
+										<p:inputText id="number" value="#{customerController.customer.number}" required="true"
+											disabled="#{!customerController.editable}" requiredMessage="#{msg.field_required} (#{msg.customer_number})" />
+										<p:message id="numberMessage" for="number" />
+									</div>
+									<div class="field col-12 md:col-4">
+										<h:outputLabel for="zip" value="#{msg.customer_zip}" />
+										<p:inputMask id="zip" value="#{customerController.customer.zip}"
+											disabled="#{!customerController.editable}" required="true"
+											mask="99.999-999" requiredMessage="#{msg.field_required} (#{msg.customer_zip})" />
+										<p:message id="zipMessage" for="zip" />
+									</div>
+								</div>
+							</p:tab>
+						</p:tabView>
+
+						<div class="grid button-demo">
+							<h:panelGrid columns="3">
+								<p:commandButton id="buttonDataBack" value="#{msg.header_buton_back}"
+									action="#{customerController.back}" process="@this" update="data_form"
+									styleClass="ui-button-raised ui-button-secondary p-mr-2 p-mb-2" />
+
+								<p:commandButton id="buttonDataClean" value="#{msg.header_buton_clean}"
+									action="#{customerController.reset}" update="data_form"
+									styleClass="ui-button-raised p-mr-2 p-mb-2" process="@this" />
+
+								<p:commandButton id="buttonDataSave" value="#{msg.header_button_save}"
+									action="#{customerController.save}" update="data_form growl"
+									styleClass="ui-button-raised p-mr-2 p-mb-2" process="@form" />
+
+							</h:panelGrid>
+						</div>
+					</div>
+				</div>
+			</p:panel>
+
+			<p:panel id="panel_list"
+				rendered="#{customerController.renderListForm eq true}">
+				<div class="grid crud-demo">
+					<div class="col-12">
+						<div class="card">
+							<ui:insert name="viewname" />
+							<p:dataTable id="avaliableList" var="list" reflow="true" paginator="true" scrollable="true"
+								value="#{customerController.listCustomer}" widgetVar="dataTable" selection="true" rows="30" rowsPerPageTemplate="30,50,100"
+								rowKey="#{list.id}" rowkey="avaliableList" emptyMessage="#{msg.admin_empty_list}"
+								paginatorAlwaysVisible="true" filteredValue="#{customerController.filteredCustomer}"
+								draggableColumns="true" paginatorPosition="bottom">
+
+								<f:facet name="header">
+									<div class="products-table-header">
+										#{msg.customer_list_title}
+										<div class="ui-inputgroup">
+											<span class="filter-container"> <p:inputText id="query" value="#{customerController.nameCustomer}"
+													placeholder="#{msg.customer_name_search}" /> 
+													<p:commandButton value="#{msg.header_button_find}"
+													 action="#{customerController.searchCustomer()}" update="data_form:avaliableList" />
+											</span>
+										</div>
+									</div>
+								</f:facet>
+
+								<p:column headerText="#{msg.customer_head}" style="width:20%;"
+									filterBy="#{not empty list.customerOwner.name and auth.hasRole('sysadmin_super_client') ? (list.customerOwner.name.concat(' | ').concat(list.name)) : (list.name)}"
+									sortBy="#{not empty list.customerOwner.name and auth.hasRole('sysadmin_super_client') ? (list.customerOwner.name.concat(' | ').concat(list.name)) : (list.name)}"
+									filterMatchMode="contains">
+									<h:outputText
+										value="#{not empty list.customerOwner.name and auth.hasRole('sysadmin_super_client') ? (list.customerOwner.name.concat(' | ').concat(list.name)) : (list.name)}" />
+								</p:column>
+
+								<p:column headerText="#{msg.customer_login}" filterBy="#{list.loginCustomer}" style="width:15%;"
+									sortBy="#{list.loginCustomer}" filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{list.loginCustomer}" />
+								</p:column>
+
+								<p:column headerText="#{msg.customer_address}" filterBy="#{list.address}, #{list.number}" style="width:18%;"
+									sortBy="#{list.address}, #{list.number}" filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{list.address}, #{list.number}" />
+								</p:column>
+
+								<p:column headerText="#{msg.customer_city}" filterBy="#{list.city.name} - #{list.city.state.uf}"
+									style="width:17%;" sortBy="#{list.city.name} - #{list.city.state.uf}"
+									filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{list.city.name} - #{list.city.state.uf}" />
+								</p:column>
+
+								<p:column headerText="#{msg.customer_phone}" filterBy="#{list.phone}" style="width:12%;"
+									sortBy="#{list.phone}" filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{list.phone}" />
+								</p:column>
+
+								<p:column headerText="#{msg.customer_email}" filterBy="#{list.email}" style="width:20%;"
+									sortBy="#{list.email}" filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{list.email}" />
+								</p:column>
+
+								<p:column headerText="#{msg.admin_status}" filterBy="#{list.dateDesactive == null ? msg.admin_active : msg.admin_inactive}"
+									style="width:10%;"
+									sortBy="#{list.dateDesactive == null ? msg.admin_active : msg.admin_inactive}"
+									filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText value="#{list.desactiveDate == null ? msg.admin_active : msg.admin_inactive}"
+										style="#{list.dateDesactive == null ? '' : 'color: red;'} " />
+								</p:column>
+
+								<p:column headerText="#{msg.customer_contract_date}"
+									filterBy="#{customerController.formatTimeZone(list.dateActive)}"
+									style="width:10%;" sortBy="#{list.activeDate}"
+									filterMatchMode="contains" filterStyle="width: 100%;">
+									<h:outputText
+										value="#{customerController.formatTimeZone(list.dateActive)}" />
+								</p:column>
+
+								<p:column headerText="#{msg.header_button_action}" style="width:82px;text-align: center">
+									<p:commandButton icon="pi pi-pencil" title="#{msg.customer_edit}"
+										styleClass="edit-button rounded-button ui-button-success" action="#{customerController.populateCustomer()}">
+										<f:setPropertyActionListener value="#{list}" target="#{customerController.customer}" />
+									</p:commandButton>
+
+									<p:commandButton id="buttonDataRemove" styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
+										action="#{customerController.remove}" icon="pi pi-times" process="@this" update="avaliableList growl">
+										<f:setPropertyActionListener value="#{list}" target="#{customerController.customer}" />
+										<p:confirm header="#{msg.customer_remove}" message="#{msg.admin_confirm_remove_text}"
+											icon="pi pi-exclamation-triangle" />
+									</p:commandButton>
+
+								</p:column>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
